@@ -1,0 +1,19 @@
+type User {
+  id: Int!
+  mobile_number: String!
+  tag_name: String
+  avatar_url: String
+  name: String
+  info: String
+}
+
+union UserResult = User | Error
+
+type Query {
+  getUserById(id: Int!): User
+}
+
+type Mutation {
+  authenticate(mobile_number: String, password: String): UserResult
+  registration(mobile_number: String, password: String): UserResult
+}
