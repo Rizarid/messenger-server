@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { createHash } from 'crypto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async getUserById(id: number) {
@@ -66,9 +68,43 @@ export class UserService {
       };
     }
 
+    const refreshToken = this.genToken(
+      foundUser.mobile_number,
+      foundUser.id,
+      '2d',
+    );
+    const accessToken = this.genToken(
+      foundUser.mobile_number,
+      foundUser.id,
+      '20m',
+    );
+
     return {
-      __typename: 'User',
-      ...foundUser,
+      user: {
+        __typename: 'User',
+        ...foundUser,
+      },
+      refreshToken,
+      accessToken,
     };
+  }
+
+  getPlayground(mobile_number: string, userId: number) {
+    return {
+      mobile_number,
+      id: userId,
+    };
+  }
+
+  genToken(mobile_number: string, userId: number, expiresIn: string) {
+    const payload = this.getPlayground(mobile_number, userId);
+
+    return this.jwtService.sign(payload, { expiresIn: expiresIn });
+  }
+
+  async checkToken(token: string) {
+    const tokenData = this.jwtService.verify(token);
+    console.log('isCorrect', tokenData);
+    return tokenData;
   }
 }

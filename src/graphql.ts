@@ -28,6 +28,7 @@ export interface IQuery {
 export interface IMutation {
     authenticate(mobile_number?: Nullable<string>, password?: Nullable<string>): Nullable<UserResult> | Promise<Nullable<UserResult>>;
     registration(mobile_number?: Nullable<string>, password?: Nullable<string>): Nullable<UserResult> | Promise<Nullable<UserResult>>;
+    refreshAccessToken(): Nullable<string> | Promise<Nullable<string>>;
 }
 
 export type UserResult = User | Error;

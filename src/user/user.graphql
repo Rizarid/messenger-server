@@ -16,4 +16,5 @@ type Query {
 type Mutation {
   authenticate(mobile_number: String, password: String): UserResult
   registration(mobile_number: String, password: String): UserResult
+  refreshAccessToken: ID
 }

@@ -29,6 +29,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      context: ({ req, res }) => ({ req, res }),
       typePaths: ['./**/*.graphql'],
       playground: true,
       definitions: {
